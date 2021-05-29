@@ -1,7 +1,7 @@
 {
   "name": "@pbot-plus/bot",
   "version": "1.0.0-beta",
-  "description": "",
+  "description": "A multi-purpose Discord bot with Typescript",
   "main": "src/main.ts",
   "scripts": {
     "start": "npm run build && node ./dist/main.js",
