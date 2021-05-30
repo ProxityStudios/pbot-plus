@@ -88,7 +88,7 @@ export default class PbotPlus {
       message.content.match(new RegExp(`^<@!?${this.client.user?.id}>( |)$`))
     ) {
       message.channel.send(DevelopingErrorEmbed);
-    } else if (message.content.startsWith(this.config.client.prefix)) {
+    } else if (message.content.startsWith(this.config.client.prefix + 'help')) {
       message.channel.send(DevelopingErrorEmbed);
     }
   }
