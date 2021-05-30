@@ -4,7 +4,7 @@ import { EventTypes } from './event.type';
 
 export interface ConfigServiceTypes {
   client: {
-    prefix: string;
+    defaultPrefix: string;
     token: string;
     intents: Array<IntentsString>;
     disabledEvents: Array<EventTypes>;

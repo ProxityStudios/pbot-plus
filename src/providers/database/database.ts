@@ -6,12 +6,19 @@ import {
   ILoggerService,
   LoggerService
 } from '../../services';
+import { GuildModel } from './models';
 
 export class DatabaseProvider {
   /**
    * Connection options for database
    */
   public options: ConnectOptions;
+
+  /**
+   * Default database connection
+   */
+  public connection: Connection = this.getConnection();
+
   private readonly config: ConfigServiceTypes = ConfigService;
   private logger: ILoggerService = LoggerService;
 
@@ -41,7 +48,7 @@ export class DatabaseProvider {
   /**
    * Get database connection
    */
-  public getConnection(): Connection {
+  private getConnection(): Connection {
     return Mongoose.connection;
   }
 
@@ -49,11 +56,15 @@ export class DatabaseProvider {
    * Register listeners
    */
   private registerListeners(): void {
-    Mongoose.connection.on('open', () => this.onReady());
+    try {
+      Mongoose.connection.on('open', () => this.onReady());
+    } catch (error) {
+      this.logger.error('Failed while registering listeners', error);
+    }
   }
 
   /**
-   * Get connection uri
+   * Get connection URI
    */
   private getConnectionUri(): string {
     const dbProvider = this.config.dbProvider;
@@ -65,7 +76,24 @@ export class DatabaseProvider {
     }
   }
 
-  private onReady(): void {
+  /**
+   * On ready
+   */
+  private async onReady(): Promise<void> {
     this.logger.info('Connected to the database');
+
+    if (await GuildModel.findById('0000000000000')) {
+      this.logger.error('Guild model has already been saved');
+    } else {
+      try {
+        const newGuild = new GuildModel({
+          _id: '0000000000000'
+        });
+        await newGuild.save();
+        this.logger.info('New guild model is saved');
+      } catch (error) {
+        this.logger.error('Failed while saving new model to database', error);
+      }
+    }
   }
 }

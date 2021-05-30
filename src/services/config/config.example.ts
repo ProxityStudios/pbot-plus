@@ -3,7 +3,7 @@ import { ConfigServiceTypes } from './config.interface';
 export const ConfigService: ConfigServiceTypes = {
   // Client Configurations
   client: {
-    prefix: '!', // Client prefix for messages
+    defaultPrefix: '!', // Client prefix for messages
     token: '<BOT_TOKEN>', // Client token for login application
     intents: [
       'GUILDS',

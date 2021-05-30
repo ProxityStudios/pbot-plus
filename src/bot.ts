@@ -1,5 +1,4 @@
 import { Constants, Message, MessageEmbed } from 'discord.js-light';
-import { Connection } from 'mongoose';
 
 import { CustomClient } from './extensions';
 import { DatabaseProvider } from './providers';
@@ -24,7 +23,7 @@ export default class PbotPlus {
   /**
    * MongoDB database
    */
-  public database!: Connection;
+  public database!: DatabaseProvider;
 
   /**
    * @param client Client
@@ -68,7 +67,7 @@ export default class PbotPlus {
     });
 
     await database.initialize();
-    this.database = database.getConnection();
+    this.database = database;
   }
 
   /**
@@ -88,7 +87,9 @@ export default class PbotPlus {
       message.content.match(new RegExp(`^<@!?${this.client.user?.id}>( |)$`))
     ) {
       message.channel.send(DevelopingErrorEmbed);
-    } else if (message.content.startsWith(this.config.client.prefix + 'help')) {
+    } else if (
+      message.content.startsWith(this.config.client.defaultPrefix + 'help')
+    ) {
       message.channel.send(DevelopingErrorEmbed);
     }
   }
@@ -98,7 +99,6 @@ export default class PbotPlus {
    */
   private onReady(): void {
     this.logger.info(`Signed in as ${this.client.user?.tag}`);
-
     this.client.setPresence(
       'WATCHING',
       `to ${this.client.guilds.cache.size.toLocaleString()} guilds`
