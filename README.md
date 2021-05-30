@@ -9,7 +9,7 @@
 <br />
 <p align="center">
   <a href="https://github.com/Pbot-plus/Bot">
-    <img src="https://cdn.discordapp.com/avatars/835258987800821791/a2430fe10bed679e1cf94bc7513e3458.png" alt="Pbot-plus" width="120" height="120">
+    <img src="https://cdn.discordapp.com/avatars/835258987800821791/7dbb50307d917c76f993ac6f21146d80.png" alt="Pbot-plus" width="120" height="120">
   </a>
 
   <h3 align="center">PBOT</h3>
