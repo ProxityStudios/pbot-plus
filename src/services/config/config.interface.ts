@@ -1,4 +1,5 @@
 import { IntentsString, PartialTypes } from 'discord.js-light';
+
 import { EventTypes } from './event.type';
 
 export interface ConfigTypes {
@@ -27,5 +28,13 @@ export interface ConfigTypes {
     error: string;
     warn: string;
     info: string;
+  };
+  dbProvider: {
+    local: boolean;
+    hostname: string;
+    database: string;
+    port?: number;
+    username?: string;
+    password?: string;
   };
 }

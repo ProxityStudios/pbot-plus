@@ -1,5 +1,8 @@
-import { Client, Constants, Message, MessageEmbed } from 'discord.js-light';
+import { Constants, Message, MessageEmbed } from 'discord.js-light';
+import { Connection } from 'mongoose';
 
+import { CustomClient } from './extensions';
+import { DatabaseProvider } from './providers';
 import { ILogger, Logger, Config } from './services';
 
 export default class PbotPlus {
@@ -14,16 +17,23 @@ export default class PbotPlus {
   public readonly config = Config;
 
   /**
+   * MongoDB database
+   */
+  public database!: Connection;
+
+  /**
    * @param client Client
    */
-  constructor(private client: Client) {}
+  constructor(private client: CustomClient) {}
 
   /**
    * Initialize the bot
    */
   public async initialize(): Promise<void> {
     try {
+      await this.registerProviders();
       this.registerListeners();
+
       await this.client.login(this.config.client.token);
     } catch (err) {
       this.logger.error('Failed while initializing to the bot', err);
@@ -44,9 +54,21 @@ export default class PbotPlus {
   }
 
   /**
+   * Register providers
+   */
+  private async registerProviders(): Promise<void> {
+    const database = new DatabaseProvider(this.config, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true
+    });
+
+    await database.initialize();
+    this.database = database.getConnection();
+  }
+
+  /**
    * On message
    * @param message
-   * @returns
    */
   private onMessage(message: Message): void {
     if (message.author.bot ?? !message.guild?.member) return;

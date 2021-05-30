@@ -1,6 +1,6 @@
 {
   "name": "@pbot-plus/bot",
-  "version": "1.0.1-beta",
+  "version": "1.0.2-beta",
   "description": "A multi-purpose Discord bot with Typescript",
   "main": "src/main.ts",
   "scripts": {
@@ -34,6 +34,7 @@
     "typescript": "^4.3.2"
   },
   "dependencies": {
-    "discord.js-light": "^3.5.11"
+    "discord.js-light": "^3.5.11",
+    "mongoose": "^5.12.12"
   }
 }
