@@ -85,7 +85,6 @@ Distributed under the MIT License. See `LICENSE` for more information.
 <br/>
 `MODERATOR` Rainbow — [@Rainbow#0375](https://proxity.ml)
 
-
 [version-shield]: https://img.shields.io/github/package-json/v/Pbot-plus/Bot?style=for-the-badge
 [version-url]: https://github.com/Pbot-plus/Bot
 [contributors-shield]: https://img.shields.io/github/contributors/Pbot-plus/Bot.svg?style=for-the-badge
