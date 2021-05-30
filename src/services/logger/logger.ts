@@ -1,7 +1,7 @@
 import { DiscordAPIError } from 'discord.js-light';
 import { Response } from 'node-fetch';
 
-export class Logger {
+export class LoggerService {
   public static info(message: string): void {
     const log = `[INFO] ${message}`;
     console.log(log);

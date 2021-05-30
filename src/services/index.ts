@@ -1,6 +1,6 @@
-export { Logger } from './logger/logger';
-export { ILogger } from './logger/logger.interface';
+export { LoggerService } from './logger/logger';
+export { ILoggerService } from './logger/logger.interface';
 
-export { Config } from './config/config';
-export { ConfigTypes } from './config/config.interface';
+export { ConfigService } from './config/config';
+export { ConfigServiceTypes } from './config/config.interface';
 export { EventTypes } from './config/event.type';

@@ -3,18 +3,23 @@ import { Connection } from 'mongoose';
 
 import { CustomClient } from './extensions';
 import { DatabaseProvider } from './providers';
-import { ILogger, Logger, Config } from './services';
+import {
+  ILoggerService,
+  LoggerService,
+  ConfigService,
+  ConfigServiceTypes
+} from './services';
 
 export default class PbotPlus {
   /**
    * Custom logger for Pbot-plus
    */
-  public logger: ILogger = Logger;
+  public logger: ILoggerService = LoggerService;
 
   /**
    * Configuration files for Pbot-plus
    */
-  public readonly config = Config;
+  public readonly config: ConfigServiceTypes = ConfigService;
 
   /**
    * MongoDB database
@@ -57,7 +62,7 @@ export default class PbotPlus {
    * Register providers
    */
   private async registerProviders(): Promise<void> {
-    const database = new DatabaseProvider(this.config, {
+    const database = new DatabaseProvider({
       useNewUrlParser: true,
       useUnifiedTopology: true
     });

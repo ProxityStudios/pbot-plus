@@ -1,20 +1,22 @@
 import Mongoose, { ConnectOptions, Connection } from 'mongoose';
 
-import { ConfigTypes, ILogger, Logger } from '../../services';
+import {
+  ConfigService,
+  ConfigServiceTypes,
+  ILoggerService,
+  LoggerService
+} from '../../services';
 
 export class DatabaseProvider {
   /**
    * Connection options for database
    */
   public options: ConnectOptions;
+  private readonly config: ConfigServiceTypes = ConfigService;
+  private logger: ILoggerService = LoggerService;
 
-  private readonly config: ConfigTypes;
-  private logger: ILogger;
-
-  constructor(config: ConfigTypes, options: ConnectOptions) {
-    this.config = config;
+  constructor(options: ConnectOptions) {
     this.options = options;
-    this.logger = Logger;
   }
 
   /**
