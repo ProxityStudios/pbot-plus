@@ -98,5 +98,10 @@ export default class PbotPlus {
    */
   private onReady(): void {
     this.logger.info(`Signed in as ${this.client.user?.tag}`);
+
+    this.client.setPresence(
+      'WATCHING',
+      `to ${this.client.guilds.cache.size.toLocaleString()} guilds`
+    );
   }
 }
