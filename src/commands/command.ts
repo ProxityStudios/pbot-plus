@@ -28,7 +28,9 @@ export class CommandContext {
    */
   user: User;
 
-  /** Bot */
+  /**
+   * Bot
+   * */
   bot: CustomClient;
 
   /**
