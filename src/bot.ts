@@ -1,19 +1,20 @@
-import { Constants, Message, MessageEmbed } from 'discord.js-light';
+import { Constants, Guild, Message } from 'discord.js-light';
 
 import { CustomClient } from './extensions';
-import { DatabaseProvider } from './providers';
+import { DatabaseProvider, GuildModel } from './providers';
 import {
   ILoggerService,
   LoggerService,
   ConfigService,
-  ConfigServiceTypes
+  ConfigServiceTypes,
+  CommandService
 } from './services';
 
-export default class PbotPlus {
+export class PbotPlus {
   /**
    * Custom logger for Pbot-plus
    */
-  public logger: ILoggerService = LoggerService;
+  public readonly logger: ILoggerService = LoggerService;
 
   /**
    * Configuration files for Pbot-plus
@@ -21,9 +22,14 @@ export default class PbotPlus {
   public readonly config: ConfigServiceTypes = ConfigService;
 
   /**
-   * MongoDB database
+   * Database provider
    */
-  public database!: DatabaseProvider;
+  public database: DatabaseProvider;
+
+  /**
+   * Command service
+   */
+  public commands: CommandService;
 
   /**
    * @param client Client
@@ -36,6 +42,7 @@ export default class PbotPlus {
   public async initialize(): Promise<void> {
     try {
       await this.registerProviders();
+      this.registerCommands();
       this.registerListeners();
 
       await this.client.login(this.config.client.token);
@@ -48,13 +55,18 @@ export default class PbotPlus {
    * Register listeners
    */
   private registerListeners(): void {
-    // on message
+    // On message
     this.client.on(Constants.Events.MESSAGE_CREATE, (message: Message) =>
       this.onMessage(message)
     );
 
-    // on ready
+    // On ready
     this.client.on(Constants.Events.CLIENT_READY, () => this.onReady());
+
+    // On guild create
+    this.client.on(Constants.Events.GUILD_CREATE, (guild: Guild) =>
+      this.onGuildCreate(guild)
+    );
   }
 
   /**
@@ -71,26 +83,59 @@ export default class PbotPlus {
   }
 
   /**
+   * Register commands
+   */
+  private registerCommands(): void {
+    const commandService = new CommandService();
+
+    commandService.initialize();
+    this.commands = commandService;
+  }
+
+  /**
    * On message
    * @param message
    */
-  private onMessage(message: Message): void {
+  private async onMessage(message: Message): Promise<void> {
     if (message.author.bot ?? !message.guild?.member) return;
 
-    const DevelopingErrorEmbed = new MessageEmbed({
-      color: this.config.color.error,
-      description:
-        'I am currently under development so only my developers can use my commands'
-    });
+    // const developingErrorEmbed = new MessageEmbed({
+    //   color: this.config.color.error,
+    //   description:
+    //     'I am currently under development so only my developers can use my commands'
+    // });
+
+    const commandPrefix =
+      (await GuildModel.findById(message.guild.id))?.main.prefix ||
+      this.config.client.defaultPrefix;
 
     if (
       message.content.match(new RegExp(`^<@!?${this.client.user?.id}>( |)$`))
     ) {
-      message.channel.send(DevelopingErrorEmbed);
-    } else if (
-      message.content.startsWith(this.config.client.defaultPrefix + 'help')
-    ) {
-      message.channel.send(DevelopingErrorEmbed);
+      message.channel.send(`Command prefix: ${commandPrefix}`);
+    } else if (message.content.startsWith(commandPrefix)) {
+      await this.commands.run(this.client, message);
+    }
+  }
+
+  /**
+   * On guild create
+   * @param guild
+   */
+  private async onGuildCreate(guild: Guild): Promise<void> {
+    try {
+      const savedGuild = await GuildModel.findById(guild.id);
+      if (savedGuild) {
+        this.logger.warn(
+          `Guild with the id ${guild.id} is already in database`
+        );
+      } else {
+        const newGuild = new GuildModel({ _id: guild.id });
+        await newGuild.save();
+        this.logger.info(`Guild with the id ${guild.id} is saved to database`);
+      }
+    } catch (error) {
+      this.logger.error('Failed while saving new guild to database', error);
     }
   }
 
@@ -101,7 +146,7 @@ export default class PbotPlus {
     this.logger.info(`Signed in as ${this.client.user?.tag}`);
     this.client.setPresence(
       'WATCHING',
-      `to ${this.client.guilds.cache.size.toLocaleString()} guilds`
+      `to ${this.client.guilds.cache.size.toLocaleString()} guilds | @PBOT`
     );
   }
 }

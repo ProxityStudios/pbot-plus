@@ -1,8 +1,8 @@
-import PbotPlus from './bot';
+import { PbotPlus } from './bot';
 import { CustomClient } from './extensions';
 import { LoggerService, ConfigService } from './services';
 
-async function initialize(): Promise<PbotPlus> {
+async function initialize(): Promise<void> {
   const client = new CustomClient({
     ws: { intents: ConfigService.client.intents },
     partials: ConfigService.client.partials,
@@ -20,8 +20,6 @@ async function initialize(): Promise<PbotPlus> {
 
   const bot = new PbotPlus(client);
   await bot.initialize();
-
-  return bot;
 }
 
 process.on('unhandledRejection', (reason) => {

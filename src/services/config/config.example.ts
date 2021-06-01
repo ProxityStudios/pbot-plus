@@ -1,7 +1,7 @@
 import { ConfigServiceTypes } from './config.interface';
 
 export const ConfigService: ConfigServiceTypes = {
-  // Client Configurations
+  // Client configurations
   client: {
     defaultPrefix: '!', // Client prefix for messages
     token: '<BOT_TOKEN>', // Client token for login application
@@ -26,10 +26,13 @@ export const ConfigService: ConfigServiceTypes = {
         lifetime: 0,
         sweepInterval: 0
       }
+    },
+    commands: {
+      plugins: ['core']
     }
   },
 
-  // Color Configurations For Message Embed
+  // Color configurations for message embed
   color: {
     success: '<HEX_CODE>', // success color (hexCode)
     error: '<HEX_CODE>', // error color (hexCode)
@@ -37,7 +40,7 @@ export const ConfigService: ConfigServiceTypes = {
     info: '<HEX_CODE>' // info color (hexCode)
   },
 
-  // Database Provider Configurations
+  // Database provider configurations
   dbProvider: {
     local: false, // if you are going to use the local connection(localhost), change the value to true
     hostname: '<DB_HOSTNAME>', // Example: 'localhost' or 'examplecluster0.eidb2.mongodb.net'

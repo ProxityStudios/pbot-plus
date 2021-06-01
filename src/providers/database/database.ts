@@ -6,7 +6,6 @@ import {
   ILoggerService,
   LoggerService
 } from '../../services';
-import { GuildModel } from './models';
 
 export class DatabaseProvider {
   /**
@@ -20,8 +19,12 @@ export class DatabaseProvider {
   public connection: Connection = this.getConnection();
 
   private readonly config: ConfigServiceTypes = ConfigService;
-  private logger: ILoggerService = LoggerService;
+  private readonly logger: ILoggerService = LoggerService;
 
+  /**
+   * Database provider
+   * @param options
+   */
   constructor(options: ConnectOptions) {
     this.options = options;
   }
@@ -41,15 +44,8 @@ export class DatabaseProvider {
         await Mongoose.connect(connectionUri, this.options);
       }
     } catch (error) {
-      this.logger.error('Failed while connecting to the database', error);
+      this.logger.error('Failed while connecting to database', error);
     }
-  }
-
-  /**
-   * Get database connection
-   */
-  private getConnection(): Connection {
-    return Mongoose.connection;
   }
 
   /**
@@ -64,15 +60,22 @@ export class DatabaseProvider {
   }
 
   /**
+   * Get database connection
+   */
+  private getConnection(): Connection {
+    return Mongoose.connection;
+  }
+
+  /**
    * Get connection URI
    */
   private getConnectionUri(): string {
-    const dbProvider = this.config.dbProvider;
+    const providerConfig = this.config.dbProvider;
 
-    if (dbProvider.local) {
-      return `mongodb://${dbProvider.hostname}:${dbProvider.port}/${dbProvider.database}`;
+    if (providerConfig.local) {
+      return `mongodb://${providerConfig.hostname}:${providerConfig.port}/${providerConfig.database}`;
     } else {
-      return `mongodb+srv://${dbProvider.username}:${dbProvider.password}@${dbProvider.hostname}/${dbProvider.database}?retryWrites=true&w=majority`;
+      return `mongodb+srv://${providerConfig.username}:${providerConfig.password}@${providerConfig.hostname}/${providerConfig.database}?retryWrites=true&w=majority`;
     }
   }
 
@@ -80,20 +83,6 @@ export class DatabaseProvider {
    * On ready
    */
   private async onReady(): Promise<void> {
-    this.logger.info('Connected to the database');
-
-    if (await GuildModel.findById('0000000000000')) {
-      this.logger.error('Guild model has already been saved');
-    } else {
-      try {
-        const newGuild = new GuildModel({
-          _id: '0000000000000'
-        });
-        await newGuild.save();
-        this.logger.info('New guild model is saved');
-      } catch (error) {
-        this.logger.error('Failed while saving new model to database', error);
-      }
-    }
+    this.logger.info('Connected to database');
   }
 }

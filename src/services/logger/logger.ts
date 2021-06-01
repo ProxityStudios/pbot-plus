@@ -2,16 +2,30 @@ import { DiscordAPIError } from 'discord.js-light';
 import { Response } from 'node-fetch';
 
 export class LoggerService {
+  /**
+   * Log with [INFO] tag
+   * @param message
+   */
   public static info(message: string): void {
     const log = `[INFO] ${message}`;
     console.log(log);
   }
 
+  /**
+   * Log with [WARN] tag
+   * @param message
+   */
   public static warn(message: string): void {
     const log = `[WARN] ${message}`;
     console.warn(log);
   }
 
+  /**
+   * Log with [ERROR] tag
+   *
+   * @param message
+   * @param error
+   */
   public static async error(message: string, error?: any): Promise<void> {
     const log = `[ERROR] ${message}`;
     console.error(log);
@@ -34,7 +48,7 @@ export class LoggerService {
           statusCode: res.status,
           statusName: res.statusText,
           headers: res.headers.raw(),
-          body: resText!
+          body: resText
         });
         break;
       }
