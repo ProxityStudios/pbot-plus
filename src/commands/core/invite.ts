@@ -5,7 +5,7 @@ export default class InviteCommand implements ICommand {
 
   async execute(ctx: CommandContext) {
     ctx.channel.send(
-      'https://discord.com/oauth2/authorize?client_id=835258987800821791&scope=bot&permissions=8&redirect_uri=http://proxity.ml'
+      `https://discord.com/oauth2/authorize?client_id=${ctx.bot.user.id}&scope=bot&permissions=8`
     );
   }
 }
