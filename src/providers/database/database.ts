@@ -1,11 +1,14 @@
+import { Guild } from 'discord.js-light';
 import Mongoose, { ConnectOptions, Connection } from 'mongoose';
 
+import { CustomClient } from '../../extensions';
 import {
   ConfigService,
   ConfigServiceTypes,
   ILoggerService,
   LoggerService
 } from '../../services';
+import { GuildModel } from './models/guild/guild';
 
 export class DatabaseProvider {
   /**
@@ -45,6 +48,28 @@ export class DatabaseProvider {
       }
     } catch (error) {
       this.logger.error('Failed while connecting to database', error);
+    }
+  }
+
+  /**
+   * Fetch new guilds | Create
+   * @param bot
+   */
+  public async fetchNewGuilds(bot: CustomClient): Promise<void> {
+    try {
+      bot.guilds.cache.map(async (guild: Guild) => {
+        const guildExists = await GuildModel.findById(guild.id);
+
+        if (!guildExists) {
+          const newGuild = new GuildModel({ _id: guild.id });
+          await newGuild.save();
+          this.logger.info(
+            `Guild with the id ${guild.id} is saved to database [OFFLINE_GUILD_CREATE]`
+          );
+        }
+      });
+    } catch (error) {
+      this.logger.error('Failed while fetching new guilds', error);
     }
   }
 

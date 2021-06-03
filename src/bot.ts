@@ -32,9 +32,9 @@ export class PbotPlus {
   public commands: CommandService;
 
   /**
-   * @param client Client
+   * @param bot Client
    */
-  constructor(private client: CustomClient) {}
+  constructor(private bot: CustomClient) {}
 
   /**
    * Initialize the bot
@@ -45,7 +45,7 @@ export class PbotPlus {
       this.registerCommands();
       this.registerListeners();
 
-      await this.client.login(this.config.client.token);
+      await this.bot.login(this.config.client.token);
     } catch (err) {
       this.logger.error('Failed while initializing to the bot', err);
     }
@@ -56,15 +56,15 @@ export class PbotPlus {
    */
   private registerListeners(): void {
     // On message
-    this.client.on(Constants.Events.MESSAGE_CREATE, (message: Message) =>
+    this.bot.on(Constants.Events.MESSAGE_CREATE, (message: Message) =>
       this.onMessage(message)
     );
 
     // On ready
-    this.client.on(Constants.Events.CLIENT_READY, () => this.onReady());
+    this.bot.on(Constants.Events.CLIENT_READY, () => this.onReady());
 
     // On guild create
-    this.client.on(Constants.Events.GUILD_CREATE, (guild: Guild) =>
+    this.bot.on(Constants.Events.GUILD_CREATE, (guild: Guild) =>
       this.onGuildCreate(guild)
     );
   }
@@ -109,12 +109,10 @@ export class PbotPlus {
       (await GuildModel.findById(message.guild.id))?.main.prefix ||
       this.config.client.defaultPrefix;
 
-    if (
-      message.content.match(new RegExp(`^<@!?${this.client.user?.id}>( |)$`))
-    ) {
+    if (message.content.match(new RegExp(`^<@!?${this.bot.user?.id}>( |)$`))) {
       message.channel.send(`Command prefix: ${commandPrefix}`);
     } else if (message.content.startsWith(commandPrefix)) {
-      await this.commands.run(this.client, message);
+      await this.commands.run(this.bot, message);
     }
   }
 
@@ -142,11 +140,13 @@ export class PbotPlus {
   /**
    * On ready
    */
-  private onReady(): void {
-    this.logger.info(`Signed in as ${this.client.user?.tag}`);
-    this.client.setPresence(
+  private async onReady(): Promise<void> {
+    await this.database.fetchNewGuilds(this.bot);
+
+    this.logger.info(`Signed in as ${this.bot.user?.tag}`);
+    this.bot.setPresence(
       'WATCHING',
-      `to ${this.client.guilds.cache.size.toLocaleString()} guilds | @PBOT`
+      `to ${this.bot.guilds.cache.size.toLocaleString()} guilds | @PBOT`
     );
   }
 }
