@@ -2,14 +2,9 @@ import { Message } from 'discord.js-light';
 import fs from 'fs';
 import { promisify } from 'util';
 
-import {
-  ConfigService,
-  ConfigServiceTypes,
-  ILoggerService,
-  LoggerService
-} from '..';
+import { ConfigService, ConfigTypes, LoggerTypes, LoggerService } from '..';
+import { PbotPlus } from '../../bot';
 import { ICommand, CommandContext } from '../../commands';
-import { CustomClient } from '../../extensions';
 import { GuildModel } from '../../providers';
 
 const readdir = promisify(fs.readdir);
@@ -20,15 +15,15 @@ export class CommandService {
    */
   public readonly commands = new Map<string, ICommand>();
 
-  private readonly config: ConfigServiceTypes = ConfigService;
-  private readonly logger: ILoggerService = LoggerService;
+  private readonly config: ConfigTypes = ConfigService;
+  private readonly logger: LoggerTypes = LoggerService;
 
   /**
    * Initialize the command service
    */
   public initialize(): void {
     try {
-      this.config.client.commands.plugins.map(async (plugin) => {
+      this.config.client.commands.plugins.map(async (plugin: any) => {
         const commands = (
           await readdir(`${__dirname}/../../commands/${plugin}`)
         ).filter((c) => c.endsWith('.js'));
@@ -52,10 +47,10 @@ export class CommandService {
 
   /**
    * Run commands
-   * @param bot
+   * @param pbot
    * @param message
    */
-  public async run(bot: CustomClient, message: Message): Promise<void> {
+  public async run(pbot: PbotPlus, message: Message): Promise<void> {
     const commandPrefix =
       (await GuildModel.findById(message.guild.id))?.main.prefix ||
       this.config.client.defaultPrefix;
@@ -65,7 +60,7 @@ export class CommandService {
       const command = this.getCommand(slicedContent);
       if (!command) return;
 
-      const ctx = new CommandContext(bot, message, command);
+      const ctx = new CommandContext(pbot, message, command);
       await command.execute(ctx, ...this.getCommandArgs(slicedContent));
     } catch (error) {
       const content = error?.message ?? 'Un unknown error occurred.';

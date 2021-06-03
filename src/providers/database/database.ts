@@ -4,8 +4,8 @@ import Mongoose, { ConnectOptions, Connection } from 'mongoose';
 import { CustomClient } from '../../extensions';
 import {
   ConfigService,
-  ConfigServiceTypes,
-  ILoggerService,
+  ConfigTypes,
+  LoggerTypes,
   LoggerService
 } from '../../services';
 import { GuildModel } from './models/guild/guild';
@@ -21,8 +21,8 @@ export class DatabaseProvider {
    */
   public connection: Connection = this.getConnection();
 
-  private readonly config: ConfigServiceTypes = ConfigService;
-  private readonly logger: ILoggerService = LoggerService;
+  private readonly config: ConfigTypes = ConfigService;
+  private readonly logger: LoggerTypes = LoggerService;
 
   /**
    * Database provider

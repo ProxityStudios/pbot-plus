@@ -3,7 +3,7 @@ import { IntentsString, PartialTypes } from 'discord.js-light';
 import { CommandTypes } from './command.type';
 import { EventTypes } from './event.type';
 
-export interface ConfigServiceTypes {
+export interface ConfigTypes {
   client: {
     defaultPrefix: string;
     token: string;

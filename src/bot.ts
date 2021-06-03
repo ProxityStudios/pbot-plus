@@ -1,12 +1,12 @@
-import { Constants, Guild, Message } from 'discord.js-light';
+import { Constants, Guild, Message, MessageEmbed } from 'discord.js-light';
 
 import { CustomClient } from './extensions';
 import { DatabaseProvider, GuildModel } from './providers';
 import {
-  ILoggerService,
+  LoggerTypes,
   LoggerService,
   ConfigService,
-  ConfigServiceTypes,
+  ConfigTypes,
   CommandService
 } from './services';
 
@@ -14,12 +14,12 @@ export class PbotPlus {
   /**
    * Custom logger for Pbot-plus
    */
-  public readonly logger: ILoggerService = LoggerService;
+  public readonly logger: LoggerTypes = LoggerService;
 
   /**
    * Configuration files for Pbot-plus
    */
-  public readonly config: ConfigServiceTypes = ConfigService;
+  public readonly config: ConfigTypes = ConfigService;
 
   /**
    * Database provider
@@ -34,7 +34,7 @@ export class PbotPlus {
   /**
    * @param bot Client
    */
-  constructor(private bot: CustomClient) {}
+  constructor(public bot: CustomClient) {}
 
   /**
    * Initialize the bot
@@ -110,9 +110,13 @@ export class PbotPlus {
       this.config.client.defaultPrefix;
 
     if (message.content.match(new RegExp(`^<@!?${this.bot.user?.id}>( |)$`))) {
-      message.channel.send(`Command prefix: ${commandPrefix}`);
+      const PrefixEmbed = new MessageEmbed({
+        color: this.config.color.info,
+        description: `Command prefix: ${commandPrefix}`
+      });
+      message.channel.send(PrefixEmbed);
     } else if (message.content.startsWith(commandPrefix)) {
-      await this.commands.run(this.bot, message);
+      await this.commands.run(this, message);
     }
   }
 

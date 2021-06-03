@@ -8,30 +8,55 @@ import {
 
 import { ICommand } from './command.interface';
 import { CustomClient } from '../extensions';
+import { PbotPlus } from '../bot';
+import { ConfigTypes, LoggerTypes } from '../services';
+import { DatabaseProvider } from '../providers';
 
 export class CommandContext {
   /**
+   * Database
+   */
+  public database: DatabaseProvider;
+
+  /**
+   * Logger
+   */
+  public logger: LoggerTypes;
+
+  /**
+   * Config
+   */
+  public config: ConfigTypes;
+
+  /**
    * Guild member
    */
-  member: GuildMember;
+  public member: GuildMember;
 
-  /** Text channel */
-  channel: TextChannel;
+  /**
+   * Text channel
+   */
+  public channel: TextChannel;
 
   /**
    * Guild
    */
-  guild: Guild;
+  public guild: Guild;
 
   /**
    * User
    */
-  user: User;
+  public user: User;
+
+  /**
+   * PBot
+   */
+  public pbot: PbotPlus;
 
   /**
    * Bot
-   * */
-  bot: CustomClient;
+   */
+  public bot: CustomClient;
 
   /**
    * Command context
@@ -39,7 +64,7 @@ export class CommandContext {
    * @param command
    */
   constructor(
-    bot: CustomClient,
+    pbot: PbotPlus,
     public message: Message,
     public command: ICommand
   ) {
@@ -47,6 +72,10 @@ export class CommandContext {
     this.channel = message.channel as TextChannel;
     this.guild = message.guild;
     this.user = message.member.user;
-    this.bot = bot;
+    this.pbot = pbot;
+    this.bot = pbot.bot;
+    this.config = pbot.config;
+    this.logger = pbot.logger;
+    this.database = pbot.database;
   }
 }

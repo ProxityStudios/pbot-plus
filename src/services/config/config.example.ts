@@ -1,6 +1,6 @@
-import { ConfigServiceTypes } from './config.interface';
+import { ConfigTypes } from './config.interface';
 
-export const ConfigService: ConfigServiceTypes = {
+export const ConfigService: ConfigTypes = {
   // Client configurations
   client: {
     defaultPrefix: '!', // Client prefix for messages
