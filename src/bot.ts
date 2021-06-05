@@ -44,7 +44,6 @@ export class PbotPlus {
       await this.registerProviders();
       this.registerCommands();
       this.registerListeners();
-
       await this.bot.login(this.config.client.token);
     } catch (err) {
       this.logger.error('Failed while initializing to the bot', err);
@@ -55,41 +54,53 @@ export class PbotPlus {
    * Register listeners
    */
   private registerListeners(): void {
-    // On message
-    this.bot.on(Constants.Events.MESSAGE_CREATE, (message: Message) =>
-      this.onMessage(message)
-    );
+    try {
+      // On message
+      this.bot.on(Constants.Events.MESSAGE_CREATE, (message: Message) =>
+        this.onMessage(message)
+      );
 
-    // On ready
-    this.bot.on(Constants.Events.CLIENT_READY, () => this.onReady());
+      // On ready
+      this.bot.on(Constants.Events.CLIENT_READY, () => this.onReady());
 
-    // On guild create
-    this.bot.on(Constants.Events.GUILD_CREATE, (guild: Guild) =>
-      this.onGuildCreate(guild)
-    );
+      // On guild create
+      this.bot.on(Constants.Events.GUILD_CREATE, (guild: Guild) =>
+        this.onGuildCreate(guild)
+      );
+    } catch (error) {
+      this.logger.error('Failed while registering listeners for bot', error);
+    }
   }
 
   /**
    * Register providers
    */
   private async registerProviders(): Promise<void> {
-    const database = new DatabaseProvider({
-      useNewUrlParser: true,
-      useUnifiedTopology: true
-    });
+    try {
+      const database = new DatabaseProvider(this, {
+        useNewUrlParser: true,
+        useUnifiedTopology: true
+      });
 
-    await database.initialize();
-    this.database = database;
+      await database.initialize();
+      this.database = database;
+    } catch (error) {
+      this.logger.error('Failed while registering providers', error);
+    }
   }
 
   /**
    * Register commands
    */
   private registerCommands(): void {
-    const commandService = new CommandService();
+    try {
+      const commandService = new CommandService(this);
 
-    commandService.initialize();
-    this.commands = commandService;
+      commandService.initialize();
+      this.commands = commandService;
+    } catch (error) {
+      this.logger.error('Failed while registering commands', error);
+    }
   }
 
   /**
@@ -99,14 +110,8 @@ export class PbotPlus {
   private async onMessage(message: Message): Promise<void> {
     if (message.author.bot ?? !message.guild?.member) return;
 
-    // const developingErrorEmbed = new MessageEmbed({
-    //   color: this.config.color.error,
-    //   description:
-    //     'I am currently under development so only my developers can use my commands'
-    // });
-
     const commandPrefix =
-      (await GuildModel.findById(message.guild.id))?.main.prefix ||
+      (await this.database.findGuildById(message.guild.id))?.main.prefix ??
       this.config.client.defaultPrefix;
 
     if (message.content.match(new RegExp(`^<@!?${this.bot.user?.id}>( |)$`))) {
@@ -116,7 +121,7 @@ export class PbotPlus {
       });
       message.channel.send(PrefixEmbed);
     } else if (message.content.startsWith(commandPrefix)) {
-      await this.commands.run(this, message);
+      await this.commands.run(message);
     }
   }
 
@@ -126,15 +131,14 @@ export class PbotPlus {
    */
   private async onGuildCreate(guild: Guild): Promise<void> {
     try {
-      const savedGuild = await GuildModel.findById(guild.id);
+      const savedGuild = await this.database.findGuildById(guild.id);
+
       if (savedGuild) {
-        this.logger.warn(
-          `Guild with the id ${guild.id} is already in database`
-        );
+        this.logger.warn(`Guild with id ${guild.id} is already in database`);
       } else {
         const newGuild = new GuildModel({ _id: guild.id });
         await newGuild.save();
-        this.logger.info(`Guild with the id ${guild.id} is saved to database`);
+        this.logger.info(`Guild with id ${guild.id} is saved to database`);
       }
     } catch (error) {
       this.logger.error('Failed while saving new guild to database', error);
@@ -145,7 +149,9 @@ export class PbotPlus {
    * On ready
    */
   private async onReady(): Promise<void> {
-    await this.database.fetchNewGuilds(this.bot);
+    if (this.config.client.fetchNewGuilds) {
+      await this.database.fetchNewGuilds();
+    }
 
     this.logger.info(`Signed in as ${this.bot.user?.tag}`);
     this.bot.setPresence(

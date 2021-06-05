@@ -10,6 +10,7 @@ export interface ConfigTypes {
     intents: Array<IntentsString>;
     disabledEvents: Array<EventTypes>;
     partials: Array<PartialTypes>;
+    fetchNewGuilds: boolean;
     caches: {
       guilds: boolean;
       roles: boolean;
@@ -33,10 +34,10 @@ export interface ConfigTypes {
     warn: string;
     info: string;
   };
-  dbProvider: {
+  database: {
     local: boolean;
     hostname: string;
-    database: string;
+    base: string;
     port?: number;
     username?: string;
     password?: string;

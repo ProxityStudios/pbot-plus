@@ -14,6 +14,7 @@ export const ConfigService: ConfigTypes = {
     ],
     disabledEvents: [],
     partials: ['MESSAGE', 'CHANNEL', 'REACTION'],
+    fetchNewGuilds: true, // fetch new guilds and save to database if found new guilds
     caches: {
       guilds: true,
       roles: true,
@@ -28,7 +29,7 @@ export const ConfigService: ConfigTypes = {
       }
     },
     commands: {
-      plugins: ['core']
+      plugins: ['core', 'admin']
     }
   },
 
@@ -41,10 +42,10 @@ export const ConfigService: ConfigTypes = {
   },
 
   // Database provider configurations
-  dbProvider: {
+  database: {
     local: false, // if you are going to use the local connection(localhost), change the value to true
     hostname: '<DB_HOSTNAME>', // Example: 'localhost' or 'examplecluster0.eidb2.mongodb.net'
-    database: '<DATABASE_NAME>' // Example: 'pbot-database'
+    base: '<DATABASE_NAME>' // Example: 'pbot-database'
     // port: 27017,               /** if local connection is not enabled, this options is required to connect to the database */
 
     // username: '<DB_USERNAME>', /** if local connection is not enabled, this options is required to connect to the database */

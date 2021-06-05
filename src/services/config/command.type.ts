@@ -1,1 +1,1 @@
-export type CommandTypes = 'core';
+export type CommandTypes = 'core' | 'admin';

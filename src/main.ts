@@ -17,15 +17,17 @@ async function initialize(): Promise<void> {
     cachePresences: ConfigService.client.caches.presences,
     disabledEvents: ConfigService.client.disabledEvents
   });
-
   const bot = new PbotPlus(client);
+
   await bot.initialize();
 }
 
+// On unhandledRejection
 process.on('unhandledRejection', (reason) => {
   LoggerService.error('An unhandled promise rejection ocurred.', reason);
 });
 
+// Initialize
 initialize().catch((error) => {
   LoggerService.error('An unspecified error ocurred.', error);
 });

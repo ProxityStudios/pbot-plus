@@ -1,14 +1,8 @@
 import { Guild } from 'discord.js-light';
 import Mongoose, { ConnectOptions, Connection } from 'mongoose';
 
-import { CustomClient } from '../../extensions';
-import {
-  ConfigService,
-  ConfigTypes,
-  LoggerTypes,
-  LoggerService
-} from '../../services';
-import { GuildModel } from './models/guild/guild';
+import { GuildModel, IGuildModel } from '..';
+import { PbotPlus } from '../../bot';
 
 export class DatabaseProvider {
   /**
@@ -21,14 +15,12 @@ export class DatabaseProvider {
    */
   public connection: Connection = this.getConnection();
 
-  private readonly config: ConfigTypes = ConfigService;
-  private readonly logger: LoggerTypes = LoggerService;
-
   /**
    * Database provider
    * @param options
+   * @param pbot
    */
-  constructor(options: ConnectOptions) {
+  constructor(private pbot: PbotPlus, options: ConnectOptions) {
     this.options = options;
   }
 
@@ -42,12 +34,12 @@ export class DatabaseProvider {
       this.registerListeners();
 
       if (Mongoose.connections[0].readyState) {
-        this.logger.warn('Already connected to database');
+        this.pbot.logger.warn('Already connected to database');
       } else {
         await Mongoose.connect(connectionUri, this.options);
       }
     } catch (error) {
-      this.logger.error('Failed while connecting to database', error);
+      this.pbot.logger.error('Failed while connecting to database', error);
     }
   }
 
@@ -55,21 +47,22 @@ export class DatabaseProvider {
    * Fetch new guilds | Create
    * @param bot
    */
-  public async fetchNewGuilds(bot: CustomClient): Promise<void> {
+  public async fetchNewGuilds(): Promise<void> {
     try {
-      bot.guilds.cache.map(async (guild: Guild) => {
-        const guildExists = await GuildModel.findById(guild.id);
+      this.pbot.bot.guilds.cache.map(async (guild: Guild) => {
+        const id = guild.id;
+        const guildExists = await this.findGuildById(id);
 
         if (!guildExists) {
-          const newGuild = new GuildModel({ _id: guild.id });
+          const newGuild = new GuildModel({ _id: id });
           await newGuild.save();
-          this.logger.info(
-            `Guild with the id ${guild.id} is saved to database [OFFLINE_GUILD_CREATE]`
+          this.pbot.logger.info(
+            `Guild with id '${id}' is saved to database [OFFLINE_GUILD_CREATE]`
           );
         }
       });
     } catch (error) {
-      this.logger.error('Failed while fetching new guilds', error);
+      this.pbot.logger.error('Failed while fetching new guilds', error);
     }
   }
 
@@ -78,36 +71,51 @@ export class DatabaseProvider {
    */
   private registerListeners(): void {
     try {
-      Mongoose.connection.on('open', () => this.onReady());
+      this.connection.on('open', () => this.onReady());
     } catch (error) {
-      this.logger.error('Failed while registering listeners', error);
+      this.pbot.logger.error(
+        'Failed while registering listeners for database',
+        error
+      );
     }
+  }
+
+  /**
+   * Find guild by id
+   * @param id
+   * @returns Guild Model
+   */
+  public async findGuildById(id: string): Promise<IGuildModel | null> {
+    const guild = await GuildModel.findById(id);
+
+    return guild ?? null;
   }
 
   /**
    * Get database connection
    */
-  private getConnection(): Connection {
-    return Mongoose.connection;
+  private getConnection(): Connection | null {
+    const connection = Mongoose.connection;
+    return connection ?? null;
   }
 
   /**
    * Get connection URI
    */
   private getConnectionUri(): string {
-    const providerConfig = this.config.dbProvider;
+    const config = this.pbot.config.database;
 
-    if (providerConfig.local) {
-      return `mongodb://${providerConfig.hostname}:${providerConfig.port}/${providerConfig.database}`;
+    if (config.local) {
+      return `mongodb://${config.hostname}:${config.port}/${config.base}`;
     } else {
-      return `mongodb+srv://${providerConfig.username}:${providerConfig.password}@${providerConfig.hostname}/${providerConfig.database}?retryWrites=true&w=majority`;
+      return `mongodb+srv://${config.username}:${config.password}@${config.hostname}/${config.base}?retryWrites=true&w=majority`;
     }
   }
 
   /**
    * On ready
    */
-  private async onReady(): Promise<void> {
-    this.logger.info('Connected to database');
+  private onReady(): void {
+    this.pbot.logger.info('Connected to database');
   }
 }
