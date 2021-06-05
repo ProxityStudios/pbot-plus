@@ -4,7 +4,7 @@ export default class ChangePrefixCommand implements ICommand {
   name = 'change-prefix';
 
   async execute(ctx: CommandContext, prefix: string): Promise<void> {
-    if (ctx.guild.me.hasPermission('ADMINISTRATOR')) {
+    if (ctx.member.hasPermission('ADMINISTRATOR')) {
       const guild = await ctx.database.findGuildById(ctx.guild.id);
 
       if (guild) {
