@@ -16,7 +16,7 @@ export class CommandService {
   /**
    * @param pbot
    */
-  constructor(private pbot: PbotPlus) {}
+  constructor(protected pbot: PbotPlus) {}
 
   /**
    * Initialize the command service
@@ -59,15 +59,13 @@ export class CommandService {
 
     try {
       const command = this.getCommand(slicedContent);
-
       if (!command) return;
 
       const ctx = new CommandContext(this.pbot, message, command);
-      await command.execute(ctx, ...this.getCommandArgs(slicedContent));
+      await command.execute(ctx, ...this.getCommandArguments(slicedContent));
     } catch (error) {
       const content = error?.message ?? 'Un unknown error occurred.';
-
-      await message.channel.send(`Error: ${content}`);
+      await message.channel.send(this.pbot.embed.error(`Error: ${content}`));
       this.pbot.logger.error(
         `Failed while executing command ${this.getCommandName(slicedContent)}`,
         error
@@ -78,26 +76,37 @@ export class CommandService {
   /**
    * Get command
    * @param slicedContent
-   * @returns
+   * @returns Command
    */
   private getCommand(slicedContent: string): ICommand {
     const name = this.getCommandName(slicedContent);
-    return this.commands.get(name);
+    return this.commands.get(name) ?? this.getCommandByAliases(name);
   }
 
   /**
-   * Get command args
+   * Get command by aliases
+   * @param name
+   * @returns Command aliases
+   */
+  private getCommandByAliases(name: string): ICommand {
+    return Array.from(this.commands.values()).find((c) =>
+      c.aliases?.some((a) => a === name)
+    );
+  }
+
+  /**
+   * Get command arguments
    * @param slicedContent
    * @returns
    */
-  private getCommandArgs(slicedContent: string): string[] {
+  private getCommandArguments(slicedContent: string): string[] {
     return slicedContent.split(' ').slice(1);
   }
 
   /**
    * Get command name
    * @param slicedContent
-   * @returns
+   * @returns Command name
    */
   private getCommandName(slicedContent: string): string {
     return slicedContent.toLowerCase().split(' ')[0];

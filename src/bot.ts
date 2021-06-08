@@ -1,25 +1,31 @@
-import { Constants, Guild, Message, MessageEmbed } from 'discord.js-light';
+import { Constants, Guild, Message } from 'discord.js-light';
 
 import { CustomClient } from './extensions';
 import { DatabaseProvider, GuildModel } from './providers';
 import {
-  LoggerTypes,
+  LoggerType,
   LoggerService,
   ConfigService,
-  ConfigTypes,
-  CommandService
+  ConfigType,
+  CommandService,
+  EmbedService
 } from './services';
 
 export class PbotPlus {
   /**
    * Custom logger for Pbot-plus
    */
-  public readonly logger: LoggerTypes = LoggerService;
+  public readonly logger: LoggerType = LoggerService;
 
   /**
    * Configuration files for Pbot-plus
    */
-  public readonly config: ConfigTypes = ConfigService;
+  public readonly config: ConfigType = ConfigService;
+
+  /**
+   * Embed service
+   */
+  public embed: EmbedService = new EmbedService(this);
 
   /**
    * Database provider
@@ -29,7 +35,7 @@ export class PbotPlus {
   /**
    * Command service
    */
-  public commands: CommandService;
+  public commandService: CommandService;
 
   /**
    * @param bot Client
@@ -81,7 +87,6 @@ export class PbotPlus {
         useNewUrlParser: true,
         useUnifiedTopology: true
       });
-
       await database.initialize();
       this.database = database;
     } catch (error) {
@@ -95,9 +100,8 @@ export class PbotPlus {
   private registerCommands(): void {
     try {
       const commandService = new CommandService(this);
-
       commandService.initialize();
-      this.commands = commandService;
+      this.commandService = commandService;
     } catch (error) {
       this.logger.error('Failed while registering commands', error);
     }
@@ -110,18 +114,24 @@ export class PbotPlus {
   private async onMessage(message: Message): Promise<void> {
     if (message.author.bot ?? !message.guild?.member) return;
 
-    const commandPrefix =
-      (await this.database.findGuildById(message.guild.id))?.main.prefix ??
-      this.config.client.defaultPrefix;
+    const guild = await this.database.findGuildById(message.guild.id);
+    const commandPrefix = guild?.main.prefix;
 
-    if (message.content.match(new RegExp(`^<@!?${this.bot.user?.id}>( |)$`))) {
-      const PrefixEmbed = new MessageEmbed({
-        color: this.config.color.info,
-        description: `Command prefix: ${commandPrefix}`
-      });
-      message.channel.send(PrefixEmbed);
-    } else if (message.content.startsWith(commandPrefix)) {
-      await this.commands.run(message);
+    if (guild) {
+      if (message.content.match(new RegExp(`^<@!?${this.bot.user.id}>( |)$`))) {
+        const prefixEmbed = this.embed.info(true, {
+          description: `My command prefix on this server: \`${commandPrefix}\``
+        });
+        await message.channel.send(prefixEmbed);
+      } else if (message.content.startsWith(commandPrefix)) {
+        await this.commandService.run(message);
+      }
+    } else {
+      await message.channel.send(
+        this.embed.error(
+          `Guild with id **${message.guild.id}** not found in database`
+        )
+      );
     }
   }
 
@@ -153,10 +163,15 @@ export class PbotPlus {
       await this.database.fetchNewGuilds();
     }
 
-    this.logger.info(`Signed in as ${this.bot.user?.tag}`);
-    this.bot.setPresence(
-      'WATCHING',
-      `to ${this.bot.guilds.cache.size.toLocaleString()} guilds | @PBOT`
-    );
+    if (this.config.client.presence) {
+      await this.bot.setPresence(
+        'WATCHING',
+        `to ${this.bot.guilds.cache.size.toLocaleString()} guilds | @${
+          this.bot.user.username
+        }`
+      );
+    }
+
+    this.logger.info(`Signed in as ${this.bot.user.tag}`);
   }
 }

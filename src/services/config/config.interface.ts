@@ -1,14 +1,15 @@
 import { IntentsString, PartialTypes } from 'discord.js-light';
 
-import { CommandTypes } from './command.type';
-import { EventTypes } from './event.type';
+import { CommandType } from './command.type';
+import { EventType } from './event.type';
 
-export interface ConfigTypes {
+export interface ConfigType {
   client: {
     defaultPrefix: string;
     token: string;
     intents: Array<IntentsString>;
-    disabledEvents: Array<EventTypes>;
+    presence: boolean;
+    disabledEvents: Array<EventType>;
     partials: Array<PartialTypes>;
     fetchNewGuilds: boolean;
     caches: {
@@ -25,7 +26,7 @@ export interface ConfigTypes {
       };
     };
     commands: {
-      plugins: Array<CommandTypes>;
+      plugins: Array<CommandType>;
     };
   };
   color: {
@@ -34,6 +35,12 @@ export interface ConfigTypes {
     warn: string;
     info: string;
   };
+  emojis: {
+    success: string;
+    error: string;
+    warn: string;
+  };
+  tips: Array<string>;
   database: {
     local: boolean;
     hostname: string;

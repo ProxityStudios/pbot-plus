@@ -9,10 +9,15 @@ import {
 import { ICommand } from './command.interface';
 import { CustomClient } from '../extensions';
 import { PbotPlus } from '../bot';
-import { ConfigTypes, LoggerTypes } from '../services';
+import { ConfigType, LoggerType, EmbedService } from '../services';
 import { DatabaseProvider } from '../providers';
 
 export class CommandContext {
+  /**
+   * Embed
+   */
+  public embed: EmbedService;
+
   /**
    * Database
    */
@@ -21,12 +26,12 @@ export class CommandContext {
   /**
    * Logger
    */
-  public logger: LoggerTypes;
+  public logger: LoggerType;
 
   /**
    * Config
    */
-  public config: ConfigTypes;
+  public config: ConfigType;
 
   /**
    * Guild member
@@ -64,7 +69,7 @@ export class CommandContext {
    * @param command
    */
   constructor(
-    pbot: PbotPlus,
+    protected _pbot: PbotPlus,
     public message: Message,
     public command: ICommand
   ) {
@@ -72,10 +77,11 @@ export class CommandContext {
     this.channel = message.channel as TextChannel;
     this.guild = message.guild;
     this.user = message.member.user;
-    this.pbot = pbot;
-    this.bot = pbot.bot;
-    this.config = pbot.config;
-    this.logger = pbot.logger;
-    this.database = pbot.database;
+    this.pbot = _pbot;
+    this.bot = _pbot.bot;
+    this.config = _pbot.config;
+    this.logger = _pbot.logger;
+    this.database = _pbot.database;
+    this.embed = _pbot.embed;
   }
 }

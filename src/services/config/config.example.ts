@@ -1,6 +1,6 @@
-import { ConfigTypes } from './config.interface';
+import { ConfigType } from './config.interface';
 
-export const ConfigService: ConfigTypes = {
+export const ConfigService: ConfigType = {
   // Client configurations
   client: {
     defaultPrefix: '!', // Client prefix for messages
@@ -12,6 +12,7 @@ export const ConfigService: ConfigTypes = {
       'DIRECT_MESSAGES',
       'DIRECT_MESSAGE_REACTIONS'
     ],
+    presence: true,
     disabledEvents: [],
     partials: ['MESSAGE', 'CHANNEL', 'REACTION'],
     fetchNewGuilds: true, // fetch new guilds and save to database if found new guilds
@@ -40,6 +41,16 @@ export const ConfigService: ConfigTypes = {
     warn: '<HEX_CODE>', // warn color (hexCode)
     info: '<HEX_CODE>' // info color (hexCode)
   },
+
+  // Emojis
+  emojis: {
+    success: '<EMOJI_ID>',
+    error: '<EMOJI_ID>',
+    warn: '<EMOJI_ID>'
+  },
+
+  // Tips
+  tips: ['Example tip one', 'Example tip two', 'Example tip three'],
 
   // Database provider configurations
   database: {

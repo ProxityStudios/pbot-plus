@@ -87,7 +87,6 @@ export class DatabaseProvider {
    */
   public async findGuildById(id: string): Promise<IGuildModel | null> {
     const guild = await GuildModel.findById(id);
-
     return guild ?? null;
   }
 
@@ -105,11 +104,9 @@ export class DatabaseProvider {
   private getConnectionUri(): string {
     const config = this.pbot.config.database;
 
-    if (config.local) {
-      return `mongodb://${config.hostname}:${config.port}/${config.base}`;
-    } else {
-      return `mongodb+srv://${config.username}:${config.password}@${config.hostname}/${config.base}?retryWrites=true&w=majority`;
-    }
+    return config.local
+      ? `mongodb://${config.hostname}:${config.port}/${config.base}`
+      : `mongodb+srv://${config.username}:${config.password}@${config.hostname}/${config.base}?retryWrites=true&w=majority`;
   }
 
   /**

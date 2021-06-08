@@ -2,6 +2,9 @@ import { ICommand, CommandContext } from '..';
 
 export default class ChangePrefixCommand implements ICommand {
   name = 'change-prefix';
+  description = "Allows you to change the bot's prefix";
+  example = 'change-prefix <prefix>';
+  aliases = ['onek-degistir'];
 
   async execute(ctx: CommandContext, prefix: string): Promise<void> {
     if (ctx.member.hasPermission('ADMINISTRATOR')) {
@@ -11,24 +14,36 @@ export default class ChangePrefixCommand implements ICommand {
         if (prefix) {
           if (prefix === guild.main.prefix) {
             await ctx.channel.send(
-              'Please provide a different prefix than the previous prefix'
+              ctx.embed.error(
+                'Please provide a different prefix than the previous prefix'
+              )
             );
           } else {
             guild.main.prefix = prefix;
             await guild.save();
-            await ctx.channel.send('Prefix changed to: ' + guild?.main.prefix);
+
+            const PrefixChangedEmbed = ctx.embed.success(
+              `My command prefix changed to: \`${guild?.main.prefix}\``
+            );
+            await ctx.channel.send(PrefixChangedEmbed);
           }
         } else {
-          await ctx.channel.send('Please provide a valid prefix');
+          await ctx.channel.send(
+            ctx.embed.warn('Please provide a prefix to replace my prefix')
+          );
         }
       } else {
         await ctx.channel.send(
-          `Guild with id **'${ctx.guild.id}'** not found in database`
+          ctx.embed.error(
+            `Guild with id **${ctx.guild.id}** not found in database`
+          )
         );
       }
     } else {
       await ctx.channel.send(
-        "You don't have permission(`ADMINISTRATOR`) for use this command"
+        ctx.embed.error(
+          "You don't have permission(`ADMINISTRATOR`) to use this command"
+        )
       );
     }
   }

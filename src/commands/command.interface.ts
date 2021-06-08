@@ -7,6 +7,21 @@ export interface ICommand {
   name: string;
 
   /**
+   * Command description
+   */
+  description?: string;
+
+  /**
+   * Command example
+   */
+  example?: string;
+
+  /**
+   * Command aliases
+   */
+  aliases?: Array<string>;
+
+  /**
    * Execute command
    */
   execute: (ctx: CommandContext, ...args: any) => Promise<any> | void;

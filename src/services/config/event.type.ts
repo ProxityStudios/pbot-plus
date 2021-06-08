@@ -1,4 +1,4 @@
-export type EventTypes =
+export type EventType =
   | 'channelCreate'
   | 'channelDelete'
   | 'channelPinsUpdate'
