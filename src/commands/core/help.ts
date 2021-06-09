@@ -10,7 +10,8 @@ export default class HelpCommand implements IntCommand {
     const guild = await ctx.database.findGuildById(ctx.guild.id);
 
     if (!commandName) {
-      const HelpEmbed = ctx.embed.info(true, {
+      const HelpEmbed = await ctx.embed.info(ctx.message, {
+        withTips: true,
         title: 'Command Page',
         description: 'The commands you can use are listed',
         fields: [
@@ -45,7 +46,8 @@ export default class HelpCommand implements IntCommand {
           "I couldn't find the command aliases";
         const commandName = command.name;
 
-        const CommandInfoEmbed = ctx.embed.info(true, {
+        const CommandInfoEmbed = await ctx.embed.info(ctx.message, {
+          withTips: true,
           title: `[HELP] Command: ${commandName.toUpperCase()}`,
           description: commandDescription,
           fields: [

@@ -1,9 +1,14 @@
-import { MessageEmbed, MessageEmbedOptions } from 'discord.js';
+import { Message, MessageEmbed } from 'discord.js';
 
 import { PbotPlus } from '../../bot';
+import { IntEmbed } from './embed.interface';
 import { EmojiType } from './emoji.type';
 
 export class EmbedService {
+  /**
+   * Embed service
+   * @param pbot
+   */
   constructor(protected pbot: PbotPlus) {}
 
   /**
@@ -49,10 +54,16 @@ export class EmbedService {
    * @param color
    * @returns Message Embed
    */
-  public info(withTips: boolean, options: MessageEmbedOptions): MessageEmbed {
-    const tip = this.getRandomTip();
+  public async info(
+    message: Message,
+    options: IntEmbed
+  ): Promise<MessageEmbed> {
+    const prefix =
+      (await this.pbot.database.findGuildById(message.guild.id))?.main.prefix ??
+      this.pbot.config.client.defaultPrefix;
+    const tip = this.getRandomTip().replace('{{prefix}}', prefix);
 
-    return withTips
+    return options.withTips
       ? new MessageEmbed({
           ...options,
           color: this.pbot.config.color.info,

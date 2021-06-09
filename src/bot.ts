@@ -123,7 +123,8 @@ export class PbotPlus {
 
     if (guild) {
       if (message.content.match(new RegExp(`^<@!?${this.bot.user.id}>( |)$`))) {
-        const prefixEmbed = this.embed.info(true, {
+        const prefixEmbed = await this.embed.info(message, {
+          withTips: true,
           description: `My command prefix on this server: \`${commandPrefix}\``
         });
         await message.channel.send(prefixEmbed);

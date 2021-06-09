@@ -50,7 +50,10 @@ export const ConfigService: IntConfig = {
   },
 
   // Tips
-  tips: ['Example tip one', 'Example tip two', 'Example tip three'],
+  tips: [
+    'You can type `{{prefix}}help` to learn all commands',
+    'You can type `{{prefix}}invite` to invite me to guild'
+  ],
 
   // Database provider configurations
   database: {

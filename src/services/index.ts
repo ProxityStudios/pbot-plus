@@ -11,3 +11,4 @@ export { CommandService } from './command/command';
 
 export { EmbedService } from './embed/embed';
 export { EmojiType } from './embed/emoji.type';
+export { IntEmbed } from './embed/embed.interface';
