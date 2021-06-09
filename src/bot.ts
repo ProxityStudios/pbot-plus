@@ -15,17 +15,17 @@ export class PbotPlus {
   /**
    * Custom logger for Pbot-plus
    */
-  public readonly logger: IntLogger = LoggerService;
+  public readonly logger: IntLogger;
 
   /**
    * Configuration files for Pbot-plus
    */
-  public readonly config: IntConfig = ConfigService;
+  public readonly config: IntConfig;
 
   /**
    * Embed service
    */
-  public embed: EmbedService = new EmbedService(this);
+  public embed: EmbedService;
 
   /**
    * Database provider
@@ -40,7 +40,11 @@ export class PbotPlus {
   /**
    * @param bot Client
    */
-  constructor(public bot: CustomClient) {}
+  constructor(public bot: CustomClient) {
+    this.logger = LoggerService;
+    this.config = ConfigService;
+    this.embed = new EmbedService(this);
+  }
 
   /**
    * Initialize the bot
