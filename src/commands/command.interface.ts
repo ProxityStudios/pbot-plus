@@ -1,6 +1,6 @@
 import { CommandContext } from './command';
 
-export interface ICommand {
+export interface IntCommand {
   /**
    * Command name
    */

@@ -3,7 +3,7 @@ import fs from 'fs';
 import { promisify } from 'util';
 
 import { PbotPlus } from '../../bot';
-import { ICommand, CommandContext } from '../../commands';
+import { IntCommand, CommandContext } from '../../commands';
 
 const readdir = promisify(fs.readdir);
 
@@ -11,7 +11,7 @@ export class CommandService {
   /**
    * Commands for bot
    */
-  public readonly commands = new Map<string, ICommand>();
+  public readonly commands = new Map<string, IntCommand>();
 
   /**
    * @param pbot
@@ -21,7 +21,7 @@ export class CommandService {
   /**
    * Initialize the command service
    */
-  public initialize(): void {
+  public _initialize(): void {
     try {
       this.pbot.config.client.commands.plugins.map(async (plugin: any) => {
         const commandsPath = `${__dirname}/../../commands/${plugin}`;
@@ -37,7 +37,7 @@ export class CommandService {
 
           if (!Command) continue;
 
-          const command: ICommand = new Command();
+          const command: IntCommand = new Command();
           this.commands.set(command.name, command);
         }
       });
@@ -78,7 +78,7 @@ export class CommandService {
    * @param slicedContent
    * @returns Command
    */
-  private getCommand(slicedContent: string): ICommand {
+  private getCommand(slicedContent: string): IntCommand {
     const name = this.getCommandName(slicedContent);
     return this.commands.get(name) ?? this.getCommandByAliases(name);
   }
@@ -88,7 +88,7 @@ export class CommandService {
    * @param name
    * @returns Command aliases
    */
-  private getCommandByAliases(name: string): ICommand {
+  private getCommandByAliases(name: string): IntCommand {
     return Array.from(this.commands.values()).find((c) =>
       c.aliases?.some((a) => a === name)
     );

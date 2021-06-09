@@ -2,7 +2,7 @@ import { PbotPlus } from './bot';
 import { CustomClient } from './extensions';
 import { LoggerService, ConfigService } from './services';
 
-async function initialize(): Promise<void> {
+async function _initialize(): Promise<void> {
   const client = new CustomClient({
     ws: { intents: ConfigService.client.intents },
     partials: ConfigService.client.partials,
@@ -18,8 +18,7 @@ async function initialize(): Promise<void> {
     disabledEvents: ConfigService.client.disabledEvents
   });
   const bot = new PbotPlus(client);
-
-  await bot.initialize();
+  await bot._initialize();
 }
 
 // On unhandledRejection
@@ -28,6 +27,6 @@ process.on('unhandledRejection', (reason) => {
 });
 
 // Initialize
-initialize().catch((error) => {
+_initialize().catch((error) => {
   LoggerService.error('An unspecified error ocurred.', error);
 });

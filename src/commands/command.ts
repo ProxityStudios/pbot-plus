@@ -6,10 +6,10 @@ import {
   User
 } from 'discord.js-light';
 
-import { ICommand } from './command.interface';
+import { IntCommand } from './command.interface';
 import { CustomClient } from '../extensions';
 import { PbotPlus } from '../bot';
-import { ConfigType, LoggerType, EmbedService } from '../services';
+import { IntConfig, IntLogger, EmbedService } from '../services';
 import { DatabaseProvider } from '../providers';
 
 export class CommandContext {
@@ -26,12 +26,12 @@ export class CommandContext {
   /**
    * Logger
    */
-  public logger: LoggerType;
+  public logger: IntLogger;
 
   /**
    * Config
    */
-  public config: ConfigType;
+  public config: IntConfig;
 
   /**
    * Guild member
@@ -71,7 +71,7 @@ export class CommandContext {
   constructor(
     protected _pbot: PbotPlus,
     public message: Message,
-    public command: ICommand
+    public command: IntCommand
   ) {
     this.member = message.member;
     this.channel = message.channel as TextChannel;

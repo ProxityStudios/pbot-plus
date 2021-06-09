@@ -3,10 +3,10 @@ import { Constants, Guild, Message } from 'discord.js-light';
 import { CustomClient } from './extensions';
 import { DatabaseProvider, GuildModel } from './providers';
 import {
-  LoggerType,
+  IntLogger,
   LoggerService,
   ConfigService,
-  ConfigType,
+  IntConfig,
   CommandService,
   EmbedService
 } from './services';
@@ -15,12 +15,12 @@ export class PbotPlus {
   /**
    * Custom logger for Pbot-plus
    */
-  public readonly logger: LoggerType = LoggerService;
+  public readonly logger: IntLogger = LoggerService;
 
   /**
    * Configuration files for Pbot-plus
    */
-  public readonly config: ConfigType = ConfigService;
+  public readonly config: IntConfig = ConfigService;
 
   /**
    * Embed service
@@ -45,7 +45,7 @@ export class PbotPlus {
   /**
    * Initialize the bot
    */
-  public async initialize(): Promise<void> {
+  public async _initialize(): Promise<void> {
     try {
       await this.registerProviders();
       this.registerCommands();
@@ -87,7 +87,7 @@ export class PbotPlus {
         useNewUrlParser: true,
         useUnifiedTopology: true
       });
-      await database.initialize();
+      await database._initialize();
       this.database = database;
     } catch (error) {
       this.logger.error('Failed while registering providers', error);
@@ -100,7 +100,7 @@ export class PbotPlus {
   private registerCommands(): void {
     try {
       const commandService = new CommandService(this);
-      commandService.initialize();
+      commandService._initialize();
       this.commandService = commandService;
     } catch (error) {
       this.logger.error('Failed while registering commands', error);

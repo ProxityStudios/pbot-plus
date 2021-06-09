@@ -1,6 +1,6 @@
 import { model, Schema } from 'mongoose';
 
-import { IGuildModel } from './guild.interface';
+import { IntGuildModel } from './guild.interface';
 import { ConfigService } from '../../../../services';
 
 const GuildSchema: Schema = new Schema({
@@ -13,4 +13,4 @@ const GuildSchema: Schema = new Schema({
   }
 });
 
-export const GuildModel = model<IGuildModel>('Guild', GuildSchema);
+export const GuildModel = model<IntGuildModel>('Guild', GuildSchema);

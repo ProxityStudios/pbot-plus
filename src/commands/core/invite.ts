@@ -1,6 +1,6 @@
-import { ICommand, CommandContext } from '..';
+import { IntCommand, CommandContext } from '..';
 
-export default class InviteCommand implements ICommand {
+export default class InviteCommand implements IntCommand {
   name = 'invite';
   description = 'Allows you to add the bot';
   example = 'invite';

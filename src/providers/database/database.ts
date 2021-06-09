@@ -1,7 +1,7 @@
 import { Guild } from 'discord.js-light';
 import Mongoose, { ConnectOptions, Connection } from 'mongoose';
 
-import { GuildModel, IGuildModel } from '..';
+import { GuildModel, IntGuildModel } from '..';
 import { PbotPlus } from '../../bot';
 
 export class DatabaseProvider {
@@ -27,7 +27,7 @@ export class DatabaseProvider {
   /**
    * Initialize database provider
    */
-  public async initialize(): Promise<void> {
+  public async _initialize(): Promise<void> {
     const connectionUri = this.getConnectionUri();
 
     try {
@@ -57,7 +57,7 @@ export class DatabaseProvider {
           const newGuild = new GuildModel({ _id: id });
           await newGuild.save();
           this.pbot.logger.info(
-            `Guild with id '${id}' is saved to database [OFFLINE_GUILD_CREATE]`
+            `Guild with id ${id} is saved to database [OFFLINE_GUILD_CREATE]`
           );
         }
       });
@@ -85,7 +85,7 @@ export class DatabaseProvider {
    * @param id
    * @returns Guild Model
    */
-  public async findGuildById(id: string): Promise<IGuildModel | null> {
+  public async findGuildById(id: string): Promise<IntGuildModel | null> {
     const guild = await GuildModel.findById(id);
     return guild ?? null;
   }

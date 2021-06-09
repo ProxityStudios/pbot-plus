@@ -1,6 +1,6 @@
-import { ICommand, CommandContext } from '..';
+import { IntCommand, CommandContext } from '..';
 
-export default class ChangePrefixCommand implements ICommand {
+export default class ChangePrefixCommand implements IntCommand {
   name = 'change-prefix';
   description = "Allows you to change the bot's prefix";
   example = 'change-prefix <prefix>';
@@ -10,33 +10,25 @@ export default class ChangePrefixCommand implements ICommand {
     if (ctx.member.hasPermission('ADMINISTRATOR')) {
       const guild = await ctx.database.findGuildById(ctx.guild.id);
 
-      if (guild) {
-        if (prefix) {
-          if (prefix === guild.main.prefix) {
-            await ctx.channel.send(
-              ctx.embed.error(
-                'Please provide a different prefix than the previous prefix'
-              )
-            );
-          } else {
-            guild.main.prefix = prefix;
-            await guild.save();
-
-            const PrefixChangedEmbed = ctx.embed.success(
-              `My command prefix changed to: \`${guild?.main.prefix}\``
-            );
-            await ctx.channel.send(PrefixChangedEmbed);
-          }
-        } else {
+      if (prefix) {
+        if (prefix === guild.main.prefix) {
           await ctx.channel.send(
-            ctx.embed.warn('Please provide a prefix to replace my prefix')
+            ctx.embed.error(
+              'Please provide a different prefix than the previous prefix'
+            )
           );
+        } else {
+          guild.main.prefix = prefix;
+          await guild.save();
+
+          const PrefixChangedEmbed = ctx.embed.success(
+            `My command prefix changed to: \`${guild?.main.prefix}\``
+          );
+          await ctx.channel.send(PrefixChangedEmbed);
         }
       } else {
         await ctx.channel.send(
-          ctx.embed.error(
-            `Guild with id **${ctx.guild.id}** not found in database`
-          )
+          ctx.embed.warn('Please provide a prefix to replace my prefix')
         );
       }
     } else {
