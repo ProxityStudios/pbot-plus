@@ -2,7 +2,7 @@
   "name": "@pbot-plus/bot",
   "version": "1.0.5-beta",
   "description": "A multi-purpose Discord bot with Typescript",
-  "main": "src/main.ts",
+  "main": "dist/main.js",
   "scripts": {
     "start": "npm run build && node ./dist/main.js",
     "build": "tsc --build",
