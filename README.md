@@ -20,7 +20,7 @@
     <a href="https://proxity.ml/" target="_blank"><strong>» Explore the docs</strong></a>
     <br />
     <br />
-    <a href="https://github.com/Pbot-plus/Bot">View Demo</a>
+    <a href="https://discord.com/oauth2/authorize?client_id=835258987800821791&scope=bot&permissions=2147484680">View Demo (INVITE)</a>
     ·
     <a href="https://github.com/Pbot-plus/Bot/issues">Report Bug</a>
     ·
