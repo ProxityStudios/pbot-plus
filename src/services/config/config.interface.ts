@@ -11,6 +11,7 @@ export interface IntConfig {
     presence: boolean;
     disabledEvents: Array<EventType>;
     partials: Array<PartialTypes>;
+    staffs: Array<string>;
     fetchNewGuilds: boolean;
     caches: {
       guilds: boolean;

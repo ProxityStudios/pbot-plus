@@ -15,6 +15,7 @@ export const ConfigService: IntConfig = {
     presence: true,
     disabledEvents: [],
     partials: ['MESSAGE', 'CHANNEL', 'REACTION'],
+    staffs: ['<DISCORD_ID>'], // ["<DISCORD_ID>", "<DISCORD_ID>"]
     fetchNewGuilds: true, // fetch new guilds and save to database if found new guilds
     caches: {
       guilds: true,
@@ -30,7 +31,7 @@ export const ConfigService: IntConfig = {
       }
     },
     commands: {
-      plugins: ['core', 'admin']
+      plugins: ['core', 'admin', 'staff']
     }
   },
 
@@ -52,7 +53,8 @@ export const ConfigService: IntConfig = {
   // Tips
   tips: [
     'You can type `{{prefix}}help` to learn all commands',
-    'You can type `{{prefix}}invite` to invite me to guild'
+    'You can type `{{prefix}}invite` to invite me to guild',
+    'You can type `{{prefix}}prefix` to change my prefix'
   ],
 
   // Database provider configurations

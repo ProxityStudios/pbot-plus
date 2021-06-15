@@ -13,7 +13,7 @@ export class DatabaseProvider {
   /**
    * Default database connection
    */
-  public connection: Connection = this.getConnection();
+  public connection: Connection;
 
   /**
    * Database provider
@@ -22,6 +22,7 @@ export class DatabaseProvider {
    */
   constructor(private pbot: PbotPlus, options: ConnectOptions) {
     this.options = options;
+    this.connection = this.getConnection();
   }
 
   /**
@@ -103,7 +104,6 @@ export class DatabaseProvider {
    */
   private getConnectionUri(): string {
     const config = this.pbot.config.database;
-
     return config.local
       ? `mongodb://${config.hostname}:${config.port}/${config.base}`
       : `mongodb+srv://${config.username}:${config.password}@${config.hostname}/${config.base}?retryWrites=true&w=majority`;

@@ -13,12 +13,12 @@ import {
 
 export class PbotPlus {
   /**
-   * Custom logger for Pbot-plus
+   * Logger
    */
   public readonly logger: IntLogger;
 
   /**
-   * Configuration files for Pbot-plus
+   * Configuration
    */
   public readonly config: IntConfig;
 
