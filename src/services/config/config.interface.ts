@@ -13,6 +13,7 @@ export interface IntConfig {
     partials: Array<PartialTypes>;
     staffs: Array<string>;
     fetchNewGuilds: boolean;
+    messageTyping: boolean;
     caches: {
       guilds: boolean;
       roles: boolean;

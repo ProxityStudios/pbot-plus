@@ -17,6 +17,7 @@ export const ConfigService: IntConfig = {
     partials: ['MESSAGE', 'CHANNEL', 'REACTION'],
     staffs: ['<DISCORD_ID>'], // ["<DISCORD_ID>", "<DISCORD_ID>"]
     fetchNewGuilds: true, // fetch new guilds and save to database if found new guilds
+    messageTyping: true,
     caches: {
       guilds: true,
       roles: true,
