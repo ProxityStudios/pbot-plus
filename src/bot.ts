@@ -129,13 +129,7 @@ export class PbotPlus {
         });
         await message.channel.send(prefixEmbed);
       } else if (message.content.startsWith(commandPrefix)) {
-        if (this.config.client.messageTyping) {
-          message.channel.startTyping();
-          await this.commandService.run(message);
-          message.channel.stopTyping();
-        } else {
-          await this.commandService.run(message);
-        }
+        await this.commandService.run(message);
       }
     } else {
       await message.channel.send(

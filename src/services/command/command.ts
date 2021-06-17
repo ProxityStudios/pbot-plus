@@ -60,8 +60,8 @@ export class CommandService {
     try {
       const command = this.getCommand(slicedContent);
       if (!command) return;
-
       const ctx = new CommandContext(this.pbot, message, command);
+      if (this.pbot.config.client.messageTyping) message.channel.startTyping();
       await command.execute(ctx, ...this.getCommandArguments(slicedContent));
     } catch (error) {
       const content = error?.message ?? 'Un unknown error occurred.';
@@ -70,6 +70,8 @@ export class CommandService {
         `Failed while executing command ${this.getCommandName(slicedContent)}`,
         error
       );
+    } finally {
+      if (this.pbot.config.client.messageTyping) message.channel.stopTyping();
     }
   }
 
