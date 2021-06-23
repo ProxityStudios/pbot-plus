@@ -24,7 +24,7 @@ export class CustomClient extends Client {
     name: string,
     url?: string
   ): Promise<Presence> {
-    return await this.user.setPresence({
+    return this.user.setPresence({
       activity: {
         type,
         name,

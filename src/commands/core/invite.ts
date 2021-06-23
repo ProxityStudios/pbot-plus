@@ -7,10 +7,10 @@ export default class InviteCommand implements IntCommand {
   aliases = ['davet-et'];
 
   async execute(ctx: CommandContext): Promise<void> {
-    const invite_url = `https://discord.com/oauth2/authorize?client_id=${ctx.bot.user.id}&scope=bot&permissions=8`;
+    const inviteUrl = `https://discord.com/oauth2/authorize?client_id=${ctx.bot.user.id}&scope=bot&permissions=8`;
     await ctx.channel.send(
       await ctx.embed.info(ctx.message, {
-        description: `Hello, [click here](${invite_url}) to invite me to guild`
+        description: `Hello, [click here](${inviteUrl}) to invite me to guild`
       })
     );
   }

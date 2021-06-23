@@ -19,7 +19,7 @@ export interface IntCommand {
   /**
    * Command aliases
    */
-  aliases?: Array<string>;
+  aliases?: string[];
 
   /**
    * Execute command

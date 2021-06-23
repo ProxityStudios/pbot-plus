@@ -7,11 +7,11 @@ export interface IntConfig {
   client: {
     defaultPrefix: string;
     token: string;
-    intents: Array<IntentsString>;
+    intents: IntentsString[];
     presence: boolean;
-    disabledEvents: Array<EventType>;
-    partials: Array<PartialTypes>;
-    staffs: Array<string>;
+    disabledEvents: EventType[];
+    partials: PartialTypes[];
+    staffs: string[];
     fetchNewGuilds: boolean;
     messageTyping: boolean;
     caches: {
@@ -28,7 +28,7 @@ export interface IntConfig {
       };
     };
     commands: {
-      plugins: Array<CommandType>;
+      plugins: CommandType[];
     };
   };
   color: {
@@ -42,7 +42,7 @@ export interface IntConfig {
     error: string;
     warn: string;
   };
-  tips: Array<string>;
+  tips: string[];
   database: {
     local: boolean;
     hostname: string;
