@@ -8,19 +8,19 @@ export class DatabaseProvider {
   /**
    * Connection options for database
    */
-  public options: ConnectOptions;
+  options: ConnectOptions;
 
   /**
    * Default database connection
    */
-  public connection: Connection;
+  connection: Connection;
 
   /**
    * Database provider
    * @param options
    * @param pbot
    */
-  constructor(private pbot: PbotPlus, options: ConnectOptions) {
+  constructor(protected pbot: PbotPlus, options: ConnectOptions) {
     this.options = options;
     this.connection = this.getConnection();
   }
@@ -28,7 +28,7 @@ export class DatabaseProvider {
   /**
    * Initialize database provider
    */
-  public async _initialize(): Promise<void> {
+  async _initialize(): Promise<void> {
     const connectionUri = this.getConnectionUri();
 
     try {
@@ -48,7 +48,7 @@ export class DatabaseProvider {
    * Fetch new guilds | Create
    * @param bot
    */
-  public async fetchNewGuilds(): Promise<void> {
+  async fetchNewGuilds(): Promise<void> {
     try {
       this.pbot.bot.guilds.cache.map(async (guild: Guild) => {
         const id = guild.id;
@@ -57,9 +57,7 @@ export class DatabaseProvider {
         if (!guildExists) {
           const newGuild = new GuildModel({ _id: id });
           await newGuild.save();
-          this.pbot.logger.info(
-            `Guild with id ${id} is saved to database [OFFLINE_GUILD_CREATE]`
-          );
+          this.pbot.logger.info(`Guild with id ${id} is saved to database [OFFLINE_GUILD_CREATE]`);
         }
       });
     } catch (error) {
@@ -74,10 +72,7 @@ export class DatabaseProvider {
     try {
       this.connection.on('open', () => this.onReady());
     } catch (error) {
-      this.pbot.logger.error(
-        'Failed while registering listeners for database',
-        error
-      );
+      this.pbot.logger.error('Failed while registering listeners for database', error);
     }
   }
 
@@ -86,7 +81,7 @@ export class DatabaseProvider {
    * @param id
    * @returns Guild Model
    */
-  public async findGuildById(id: string): Promise<IntGuildModel | null> {
+  async findGuildById(id: string): Promise<IntGuildModel | null> {
     const guild = await GuildModel.findById(id);
     return guild ?? null;
   }

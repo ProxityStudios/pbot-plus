@@ -16,7 +16,7 @@ export class EmbedService {
    * @param content
    * @returns Message Embed
    */
-  public error(content: string): MessageEmbed {
+  error(content: string): MessageEmbed {
     return new MessageEmbed({
       color: this.pbot.config.color.error,
       description: `${this.getEmoji('error')} ${content}`
@@ -28,7 +28,7 @@ export class EmbedService {
    * @param content
    * @returns Message Embed
    */
-  public warn(content: string): MessageEmbed {
+  warn(content: string): MessageEmbed {
     return new MessageEmbed({
       color: this.pbot.config.color.warn,
       description: `${this.getEmoji('warn')} ${content}`
@@ -40,7 +40,7 @@ export class EmbedService {
    * @param content
    * @returns Message Embed
    */
-  public success(content: string): MessageEmbed {
+  success(content: string): MessageEmbed {
     return new MessageEmbed({
       color: this.pbot.config.color.success,
       description: `${this.getEmoji('success')} ${content}`
@@ -54,13 +54,8 @@ export class EmbedService {
    * @param color
    * @returns Message Embed
    */
-  public async info(
-    message: Message,
-    options: IntEmbed
-  ): Promise<MessageEmbed> {
-    const prefix =
-      (await this.pbot.database.findGuildById(message.guild.id))?.main.prefix ??
-      this.pbot.config.client.defaultPrefix;
+  async info(message: Message, options: IntEmbed): Promise<MessageEmbed> {
+    const prefix = (await this.pbot.database.findGuildById(message.guild.id))?.main.prefix ?? this.pbot.config.client.defaultPrefix;
     const tip = this.getRandomTip().replace('{{prefix}}', prefix);
 
     return options.withTips

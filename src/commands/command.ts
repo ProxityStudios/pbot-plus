@@ -1,10 +1,4 @@
-import {
-  Message,
-  GuildMember,
-  TextChannel,
-  Guild,
-  User
-} from 'discord.js-light';
+import { Message, GuildMember, TextChannel, Guild, User } from 'discord.js-light';
 
 import { IntCommand } from './command.interface';
 import { CustomClient } from '../extensions';
@@ -16,63 +10,59 @@ export class CommandContext {
   /**
    * Embed
    */
-  public embed: EmbedService;
+  embed: EmbedService;
 
   /**
    * Database
    */
-  public database: DatabaseProvider;
+  database: DatabaseProvider;
 
   /**
    * Logger
    */
-  public logger: IntLogger;
+  logger: IntLogger;
 
   /**
    * Config
    */
-  public config: IntConfig;
+  config: IntConfig;
 
   /**
    * Guild member
    */
-  public member: GuildMember;
+  member: GuildMember;
 
   /**
    * Text channel
    */
-  public channel: TextChannel;
+  channel: TextChannel;
 
   /**
    * Guild
    */
-  public guild: Guild;
+  guild: Guild;
 
   /**
    * User
    */
-  public user: User;
+  user: User;
 
   /**
-   * PBot
+   * Pbot
    */
-  public pbot: PbotPlus;
+  pbot: PbotPlus;
 
   /**
    * Bot
    */
-  public bot: CustomClient;
+  bot: CustomClient;
 
   /**
    * Command context
    * @param message
    * @param command
    */
-  constructor(
-    protected _pbot: PbotPlus,
-    public message: Message,
-    public command: IntCommand
-  ) {
+  constructor(protected _pbot: PbotPlus, public message: Message, public command: IntCommand) {
     this.member = message.member;
     this.channel = message.channel as TextChannel;
     this.guild = message.guild;

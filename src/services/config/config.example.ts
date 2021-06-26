@@ -5,13 +5,7 @@ export const ConfigService: IntConfig = {
   client: {
     defaultPrefix: '!', // Client prefix for messages
     token: '<BOT_TOKEN>', // Client token for login application
-    intents: [
-      'GUILDS',
-      'GUILD_MESSAGES',
-      'GUILD_MESSAGE_REACTIONS',
-      'DIRECT_MESSAGES',
-      'DIRECT_MESSAGE_REACTIONS'
-    ],
+    intents: ['GUILDS', 'GUILD_MESSAGES', 'GUILD_MESSAGE_REACTIONS', 'DIRECT_MESSAGES', 'DIRECT_MESSAGE_REACTIONS'],
     presence: true,
     disabledEvents: [],
     partials: ['MESSAGE', 'CHANNEL', 'REACTION'],

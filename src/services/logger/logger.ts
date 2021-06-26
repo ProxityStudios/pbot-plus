@@ -8,7 +8,7 @@ export class LoggerService {
    * Log with [INFO] tag
    * @param message
    */
-  public static info(message: string): void {
+  static info(message: string): void {
     const log = this.getFormatedContent(message, 'info');
     console.log(log);
   }
@@ -17,7 +17,7 @@ export class LoggerService {
    * Log with [WARN] tag
    * @param message
    */
-  public static warn(message: string): void {
+  static warn(message: string): void {
     const log = this.getFormatedContent(message, 'warn');
     console.warn(log);
   }
@@ -27,7 +27,7 @@ export class LoggerService {
    * @param message
    * @param error
    */
-  public static async error(message: string, error?: any): Promise<void> {
+  static async error(message: string, error?: any): Promise<void> {
     const log = this.getFormatedContent(message, 'error');
     console.error(log);
 

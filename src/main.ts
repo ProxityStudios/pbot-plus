@@ -21,12 +21,9 @@ async function _initialize(): Promise<void> {
   await bot._initialize();
 }
 
-// On unhandledRejection
 process.on('unhandledRejection', (reason) => {
   LoggerService.error('An unhandled promise rejection ocurred.', reason);
 });
-
-// Initialize
 _initialize().catch((error) => {
   LoggerService.error('An unspecified error ocurred.', error);
 });

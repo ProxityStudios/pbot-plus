@@ -2,45 +2,44 @@ import { Constants, Guild, Message } from 'discord.js-light';
 
 import { CustomClient } from './extensions';
 import { DatabaseProvider, GuildModel } from './providers';
-import {
-  IntLogger,
-  LoggerService,
-  ConfigService,
-  IntConfig,
-  CommandService,
-  EmbedService
-} from './services';
+import { IntLogger, LoggerService, ConfigService, IntConfig, CommandService, EmbedService } from './services';
 
 export class PbotPlus {
   /**
+   * Bot
+   */
+  bot: CustomClient;
+
+  /**
    * Logger
    */
-  public readonly logger: IntLogger;
+  readonly logger: IntLogger;
 
   /**
    * Configuration
    */
-  public readonly config: IntConfig;
+  readonly config: IntConfig;
 
   /**
    * Embed service
    */
-  public embed: EmbedService;
+  embed: EmbedService;
 
   /**
    * Database provider
    */
-  public database: DatabaseProvider;
+  database: DatabaseProvider;
 
   /**
    * Command service
    */
-  public commandService: CommandService;
+  commandService: CommandService;
 
   /**
    * @param bot Client
    */
-  constructor(public bot: CustomClient) {
+  constructor(bot: CustomClient) {
+    this.bot = bot;
     this.logger = LoggerService;
     this.config = ConfigService;
     this.embed = new EmbedService(this);
@@ -49,7 +48,7 @@ export class PbotPlus {
   /**
    * Initialize the bot
    */
-  public async _initialize(): Promise<void> {
+  async _initialize(): Promise<void> {
     try {
       await this.registerProviders();
       this.registerCommands();
@@ -65,18 +64,9 @@ export class PbotPlus {
    */
   private registerListeners(): void {
     try {
-      // On message
-      this.bot.on(Constants.Events.MESSAGE_CREATE, (message: Message) =>
-        this.onMessage(message)
-      );
-
-      // On ready
+      this.bot.on(Constants.Events.MESSAGE_CREATE, (message: Message) => this.onMessage(message));
       this.bot.on(Constants.Events.CLIENT_READY, () => this.onReady());
-
-      // On guild create
-      this.bot.on(Constants.Events.GUILD_CREATE, (guild: Guild) =>
-        this.onGuildCreate(guild)
-      );
+      this.bot.on(Constants.Events.GUILD_CREATE, (guild: Guild) => this.onGuildCreate(guild));
     } catch (error) {
       this.logger.error('Failed while registering listeners for bot', error);
     }
@@ -132,11 +122,7 @@ export class PbotPlus {
         await this.commandService.run(message);
       }
     } else {
-      await message.channel.send(
-        this.embed.error(
-          `Guild with id **${message.guild.id}** not found in database`
-        )
-      );
+      await message.channel.send(this.embed.error(`Guild with id **${message.guild.id}** not found in database`));
     }
   }
 
@@ -169,12 +155,7 @@ export class PbotPlus {
     }
 
     if (this.config.client.presence) {
-      await this.bot.setPresence(
-        'WATCHING',
-        `to ${this.bot.guilds.cache.size.toLocaleString()} guilds | @${
-          this.bot.user.username
-        }`
-      );
+      await this.bot.setPresence('WATCHING', `to ${this.bot.guilds.cache.size.toLocaleString()} guilds | @${this.bot.user.username}`);
     }
 
     this.logger.info(`Signed in as ${this.bot.user.tag}`);

@@ -30,20 +30,12 @@ export default class HelpCommand implements IntCommand {
       await ctx.channel.send(HelpEmbed);
     } else {
       const commands = ctx.pbot.commandService.commands;
-      const command =
-        commands.get(commandName) ??
-        Array.from(commands.values()).find((c) =>
-          c.aliases?.some((a) => a === commandName)
-        );
+      const command = commands.get(commandName) ?? Array.from(commands.values()).find((c) => c.aliases?.some((a) => a === commandName));
 
       if (command) {
-        const commandDescription =
-          command.description ?? "I couldn't find the command description";
-        const commandExample =
-          command.example ?? "I couldn't find the command example";
-        const commandAliases =
-          command.aliases?.map((alias) => `\`${alias}\``).join('**,** ') ??
-          "I couldn't find the command aliases";
+        const commandDescription = command.description ?? "I couldn't find the command description";
+        const commandExample = command.example ?? "I couldn't find the command example";
+        const commandAliases = command.aliases?.map((alias) => `\`${alias}\``).join('**,** ') ?? "I couldn't find the command aliases";
         const commandName = command.name;
 
         const CommandInfoEmbed = await ctx.embed.info(ctx.message, {
@@ -53,9 +45,7 @@ export default class HelpCommand implements IntCommand {
           fields: [
             {
               name: 'Example Usage',
-              value: command.example
-                ? `\`${guild?.main.prefix}${commandExample}\``
-                : commandExample
+              value: command.example ? `\`${guild?.main.prefix}${commandExample}\`` : commandExample
             },
             {
               name: 'Aliases',

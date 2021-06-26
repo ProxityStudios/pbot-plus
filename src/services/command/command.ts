@@ -11,7 +11,7 @@ export class CommandService {
   /**
    * Commands for bot
    */
-  public readonly commands = new Map<string, IntCommand>();
+  readonly commands = new Map<string, IntCommand>();
 
   /**
    * @param pbot
@@ -21,19 +21,15 @@ export class CommandService {
   /**
    * Initialize the command service
    */
-  public _initialize(): void {
+  _initialize(): void {
     try {
       this.pbot.config.client.commands.plugins.map(async (plugin: any) => {
         const commandsPath = `${__dirname}/../../commands/${plugin}`;
-        const commands = (await readdir(commandsPath)).filter((c) =>
-          c.endsWith('.js')
-        );
+        const commands = (await readdir(commandsPath)).filter((c) => c.endsWith('.js'));
 
         for (const file of commands) {
           const cleanName = file.replace(/(\..*)/, '');
-          const { default: Command } = await import(
-            `${commandsPath}/${cleanName}`
-          );
+          const { default: Command } = await import(`${commandsPath}/${cleanName}`);
 
           if (!Command) continue;
 
@@ -51,10 +47,8 @@ export class CommandService {
    * @param pbot
    * @param message
    */
-  public async run(message: Message): Promise<void> {
-    const commandPrefix =
-      (await this.pbot.database.findGuildById(message.guild.id))?.main.prefix ||
-      this.pbot.config.client.defaultPrefix;
+  async run(message: Message): Promise<void> {
+    const commandPrefix = (await this.pbot.database.findGuildById(message.guild.id))?.main.prefix || this.pbot.config.client.defaultPrefix;
     const slicedContent = message.content.slice(commandPrefix.length);
 
     try {
@@ -66,10 +60,7 @@ export class CommandService {
     } catch (error) {
       const content = error?.message ?? 'Un unknown error occurred.';
       await message.channel.send(this.pbot.embed.error(`Error: ${content}`));
-      this.pbot.logger.error(
-        `Failed while executing command ${this.getCommandName(slicedContent)}`,
-        error
-      );
+      this.pbot.logger.error(`Failed while executing command ${this.getCommandName(slicedContent)}`, error);
     } finally {
       if (this.pbot.config.client.messageTyping) message.channel.stopTyping();
     }
@@ -91,9 +82,7 @@ export class CommandService {
    * @returns Command aliases
    */
   private getCommandByAliases(name: string): IntCommand {
-    return Array.from(this.commands.values()).find((c) =>
-      c.aliases?.some((a) => a === name)
-    );
+    return Array.from(this.commands.values()).find((c) => c.aliases?.some((a) => a === name));
   }
 
   /**

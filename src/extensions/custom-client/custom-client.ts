@@ -1,9 +1,4 @@
-import {
-  ActivityType,
-  Client,
-  ClientOptions,
-  Presence
-} from 'discord.js-light';
+import { ActivityType, Client, ClientOptions, Presence } from 'discord.js-light';
 
 export class CustomClient extends Client {
   /**
@@ -19,11 +14,7 @@ export class CustomClient extends Client {
    * @param name
    * @param url
    */
-  public async setPresence(
-    type: ActivityType,
-    name: string,
-    url?: string
-  ): Promise<Presence> {
+  async setPresence(type: ActivityType, name: string, url?: string): Promise<Presence> {
     return this.user.setPresence({
       activity: {
         type,
