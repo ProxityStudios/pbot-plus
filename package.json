@@ -36,6 +36,6 @@
   },
   "dependencies": {
     "discord.js-light": "^3.5.11",
-    "mongoose": "^5.12.13"
+    "mongoose": "^5.13.7"
   }
 }
